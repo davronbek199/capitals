@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:poytaxtlar/models/word.dart';
+import 'package:poytaxtlar/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -15,8 +17,10 @@ class DatabaseHelper {
 
   final String tableName = "capitals";
   final String colId = 'id';
-  final String colCapital = 'city';
   final String colCountry = 'country';
+  final String colCapital = 'city';
+  final String colDetails = 'details';
+  final String colFlag = 'flag';
 
   Future<Database?> get db async {
     return _db ?? await _initDB();
@@ -30,13 +34,17 @@ class DatabaseHelper {
       await db.execute("CREATE TABLE $tableName ("
           "$colId INTEGER PRIMARY KEY,"
           "$colCapital TEXT,"
-          "$colCountry TEXT"
+          "$colCountry TEXT,"
+          "$colDetails TEXT,"
+          "$colFlag TEXT"
           ")");
     });
     return _db;
   }
 
-  void loadDB(context) async {
+  Future<void> loadDB(context) async {
+    print("DATABASE LOADED");
+
     String data =
         await DefaultAssetBundle.of(context).loadString("assets/capitals.json");
     final jsonResult = jsonDecode(data);
@@ -48,6 +56,13 @@ class DatabaseHelper {
     for (var word in capitals) {
       await insert(word);
     }
+
+    saveState();
+  }
+
+  Future<void> saveState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(Constants.IS_DATABASE_INIT, true);
   }
 
   Future<Word> insert(Word word) async {

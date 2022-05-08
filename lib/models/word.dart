@@ -2,6 +2,8 @@ class Word {
   int? id;
   String? city;
   String? country;
+  String? details;
+  String? flag;
 
   Word(this.city, this.country);
 
