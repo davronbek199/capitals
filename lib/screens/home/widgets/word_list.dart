@@ -7,7 +7,6 @@ import '../../../database_helper.dart';
 import '../../../main_provider.dart';
 import '../../../utils/constants.dart';
 
-
 class WordList extends StatefulWidget {
   const WordList({Key? key}) : super(key: key);
 
@@ -44,7 +43,7 @@ class _WordListState extends State<WordList> {
           child: ListView.builder(
             padding: const EdgeInsets.only(bottom: 10),
             itemBuilder: (context, index) {
-              return WordItem(data.words[index]);
+              return WordItem(data.words[index], data.showCity);
             },
             itemCount: data.words.length,
           ),
@@ -53,8 +52,8 @@ class _WordListState extends State<WordList> {
     );
   }
 
-  void updateQuery({String? word}) {
+  void updateQuery({String? word, bool? isCity}) {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
-    mainProvider.initList(word: word);
+    mainProvider.initList(word: word, isCity: isCity);
   }
 }

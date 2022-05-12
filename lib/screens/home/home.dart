@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:poytaxtlar/main.dart';
 import 'package:poytaxtlar/screens/home/widgets/word_list.dart';
 import 'package:provider/provider.dart';
 
-import '../../database_helper.dart';
 import '../../main_provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TextEditingController _searchQueryController = TextEditingController();
   bool _isSearching = false;
+  bool _isCity = false;
+  bool _isDark = false;
   String searchQuery = "Search query";
 
   @override
@@ -68,6 +70,26 @@ class _HomePageState extends State<HomePage> {
         icon: const Icon(Icons.search),
         onPressed: _startSearch,
       ),
+      IconButton(
+        onPressed: () {
+          final mainProvider =
+              Provider.of<MainProvider>(context, listen: false);
+          mainProvider.change();
+          _isCity = !_isCity;
+        },
+        icon: const Icon(Icons.switch_access_shortcut_rounded),
+      ),
+      IconButton(
+        onPressed: () {
+          setState(() {
+            _isDark = !_isDark;
+            ThemeStream.setTheme.add(_isDark);
+          });
+        },
+        icon: _isDark
+            ? const Icon(Icons.dark_mode)
+            : const Icon(Icons.dark_mode_outlined),
+      ),
     ];
   }
 
@@ -103,6 +125,6 @@ class _HomePageState extends State<HomePage> {
 
   void updateQuery({String? word}) {
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
-    mainProvider.initList(word: word);
+    mainProvider.initList(word: word, isCity: _isCity);
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:poytaxtlar/screens/home/home.dart';
+import 'package:poytaxtlar/utils/themes.dart';
 import 'package:provider/provider.dart';
 
 import 'main_provider.dart';
@@ -10,17 +13,28 @@ void main() {
       ChangeNotifierProvider(
         create: (_) => MainProvider(),
       )
-    ], child: const MyApp()),
+    ], child: MyApp()),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: HomePage(),
-    );
+    return StreamBuilder(
+        stream: ThemeStream.setTheme.stream,
+        initialData: false,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return MaterialApp(
+            theme: snapshot.data ? MyTheme.dark() : MyTheme.light(),
+            home: HomePage(),
+            debugShowCheckedModeBanner: false,
+          );
+        });
   }
+}
+
+class ThemeStream {
+  static StreamController<bool> setTheme = StreamController();
 }

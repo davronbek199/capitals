@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:poytaxtlar/models/word.dart';
 import 'package:poytaxtlar/screens/home/widgets/flag_widget.dart';
+import 'package:provider/provider.dart';
+
+import '../../main_provider.dart';
 
 class DetailsPage extends StatelessWidget {
   final Word word;
@@ -13,33 +16,35 @@ class DetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(word.country ?? "Topilmadi"),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(height: 72),
-              const Text(
-                'Capital:',
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                word.city ?? "...",
-                style: const TextStyle(fontSize: 36),
-              ),
-              const SizedBox(height: 24),
-              FlagWidget(
-                word.country ?? "Uzbekistan",
-                imageHeight: 240,
-                imageWidth: 320,
-              )
-            ],
-          )
-        ],
-      ),
+      body: Consumer<MainProvider>(builder: (context, data, child) {
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(height: 72),
+                Text(
+                  data.showCity ? 'Country: ' : "Capital: ",
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  data.showCity ? word.country! : word.city ?? "...",
+                  style: const TextStyle(fontSize: 36),
+                ),
+                const SizedBox(height: 24),
+                FlagWidget(
+                  word.country ?? "Uzbekistan",
+                  imageHeight: 240,
+                  imageWidth: 320,
+                )
+              ],
+            )
+          ],
+        );
+      }),
     );
   }
 }

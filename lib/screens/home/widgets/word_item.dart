@@ -6,8 +6,9 @@ import '../../details/details.dart';
 
 class WordItem extends StatelessWidget {
   final Word word;
+  final bool showCity;
 
-  const WordItem(this.word, {Key? key}) : super(key: key);
+  const WordItem(this.word, this.showCity, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class WordItem extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  word.country ?? "...",
+                  showCity ? word.city! : word.country ?? "...",
                   style: const TextStyle(fontSize: 24),
                 ),
               ),

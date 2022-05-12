@@ -71,7 +71,8 @@ class DatabaseHelper {
     return word;
   }
 
-  Future<List<Map<String, Object?>>?> getWordMap({String? word}) async {
+  Future<List<Map<String, Object?>>?> getWordMap(
+      {String? word, bool? isCity}) async {
     final data = await db;
     final List<Map<String, Object?>>? result;
     if (word == null) {
@@ -79,7 +80,7 @@ class DatabaseHelper {
     } else {
       result = await data?.query(
         tableName,
-        where: '$colCountry LIKE ?',
+        where: isCity! ? '$colCapital LIKE ?' : '$colCountry LIKE ?',
         whereArgs: ["$word%"],
       );
     }
@@ -110,8 +111,9 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Word>> getWordLike(String word) async {
-    final List<Map<String, Object?>>? wordMap = await getWordMap(word: word);
+  Future<List<Word>> getWordLike(String word, bool isCity) async {
+    final List<Map<String, Object?>>? wordMap =
+        await getWordMap(word: word, isCity: isCity);
     final List<Word> words = [];
     wordMap?.forEach((element) {
       words.add(Word.fromMap(element));
